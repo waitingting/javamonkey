@@ -11,6 +11,7 @@
 #include "highlighter.h"
 #include <memory>
 #include <shlobj.h>
+#include <iostream>
 
 #define Button_GetCheck(hwnd) ((int)(DWORD)SendMessage((hwnd), BM_GETCHECK, 0, 0))
 #define ID_REFRESH_TREE 200
@@ -60,6 +61,7 @@ HWND hwndNextButton = NULL;
 HTREEITEM g_hCurrentSearchItem = NULL;
 std::vector<HTREEITEM> g_searchResults;
 int g_currentResultIndex = -1;
+WNDPROC oldEditProc = NULL; // 原始编辑框过程
 
 HINSTANCE theInstance;
 JavaMonkey *theMonkey;
@@ -429,6 +431,28 @@ LRESULT CALLBACK SplitterSubclassProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARA
     return DefSubclassProc(hwnd, uMsg, wParam, lParam);
 }
 
+LRESULT CALLBACK EditSubclassProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+{
+    switch (uMsg)
+    {
+    case WM_KEYDOWN:
+        if (wParam == VK_RETURN) // 检测Enter键
+        {
+            // 获取父窗口句柄
+            HWND hwndParent = GetParent(hwnd);
+            // 模拟点击搜索按钮
+            SendMessage(hwndParent, WM_COMMAND, MAKEWPARAM(ID_SEARCH_BUTTON, BN_CLICKED), (LPARAM)hwndSearchButton);
+            return 0; // 消息已处理
+        }
+        break;
+    case WM_GETDLGCODE:
+        // 告诉系统我们想要处理Enter键
+        return DLGC_WANTALLKEYS | CallWindowProc(oldEditProc, hwnd, uMsg, wParam, lParam);
+    }
+    // 调用原始窗口过程处理其他消息
+    return CallWindowProc(oldEditProc, hwnd, uMsg, wParam, lParam);
+}
+
 // 创建工具栏函数
 void CreateToolbar(HWND hwndParent)
 {
@@ -445,12 +469,16 @@ void CreateToolbar(HWND hwndParent)
     // 创建搜索编辑框
     hwndSearchEdit = CreateWindow("EDIT",
                                   "",
-                                  WS_CHILD | WS_VISIBLE | WS_BORDER | ES_AUTOHSCROLL,
+                                  WS_CHILD | WS_VISIBLE | WS_BORDER | ES_AUTOHSCROLL | ES_WANTRETURN,
                                   5, 8, 200, 18,
                                   hwndParent,
                                   (HMENU)ID_SEARCH_EDIT,
                                   theInstance,
                                   NULL);
+
+    // 应用子类化使编辑框响应 Enter 键
+    oldEditProc  = (WNDPROC)SetWindowLongPtr(hwndSearchEdit, GWLP_WNDPROC, (LONG_PTR)EditSubclassProc);
+    // SetWindowSubclass(hwndSearchEdit, EditSubclassProc, 0, 0);
 
     // 创建搜索按钮
     hwndSearchButton = CreateWindow("BUTTON",
@@ -784,7 +812,6 @@ LRESULT CALLBACK WinProc(HWND hwnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
                 thePopupNode->displayAPIWindow();
             }
             break;
-        // 搜索相关命令
         case ID_NEXT_RESULT:
             NavigateToNextResult();
             break;
@@ -874,7 +901,7 @@ LRESULT CALLBACK WinProc(HWND hwnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
                 }
             }
             break;
-            
+
         }
         break;
 
@@ -1077,6 +1104,26 @@ HWND CreateAListView(HWND hwndParent)
     return hwndListView;
 }
 
+void echoMouseObject() {
+    long vmID;
+    AccessibleContext acParent;
+    AccessibleContext ac;
+    POINT p;
+    HWND hwnd;
+    RECT windowRect;
+
+    GetCursorPos(&p);
+    hwnd = WindowFromPoint(p);
+    if (GetAccessibleContextFromHWND(hwnd, &vmID, &acParent)) {
+        GetWindowRect(hwnd, &windowRect);
+        // send the point in global coordinates; Java will handle it!
+        if (GetAccessibleContextAt(vmID, acParent, (jint) p.x, (jint) p.y, &ac)) {
+            // displayAccessibleInfo(vmID, ac, p.x, p.y);		// can handle null
+            ReleaseJavaObject(vmID, ac);
+        }
+    }
+}
+
 /**
  * Create (and display) the accessible component nodes of a parent AccessibleContext
  *
@@ -1113,10 +1160,81 @@ void JavaMonkey::addComponentNodes(long vmID, AccessibleContext context,
 
         HTREEITEM treeNodeItem = TreeView_InsertItem(treeWnd, &tvis);
 
-        for (int i = 0; i < info.childrenCount; i++)
+        // for (int i = 0; i < info.childrenCount; i++)
+        // {
+        //     addComponentNodes(vmID, GetAccessibleChildFromContext(vmID, context, i),
+        //                       newNode, hwnd, treeNodeItem, treeWnd);
+        // }
+        // 检查角色是否为"table"，如果是则不添加子节点
+        if(wcscmp(info.role, L"table") == 0)
         {
-            addComponentNodes(vmID, GetAccessibleChildFromContext(vmID, context, i),
-                              newNode, hwnd, treeNodeItem, treeWnd);
+            // echoMouseObject();
+            requestFocus(vmID, context);
+            POINT p = { -492L, 248L};
+            // GetCursorPos(&p);
+            AccessibleContext gbcontext;
+            // p = { -477L, 256L};
+            GetCursorPos(&p);
+            p = { -442, 295};
+            auto u = p.x;
+            auto d = p.y;
+            AccessibleContextInfo topInfo;
+            auto topAc = getTopLevelObject(vmID, context);
+            auto gcsuccess = GetAccessibleContextInfo(vmID, topAc, &topInfo);
+            gcsuccess = GetAccessibleContextAt(vmID, topAc, p.x, p.y, &gbcontext);
+            AccessibleContextInfo gcInfo;
+
+            AccessibleContext sdcontext;
+            gcsuccess = GetAccessibleContextAt(vmID, gbcontext, p.x, p.y, &sdcontext);
+            gcsuccess = GetAccessibleContextInfo(vmID, gbcontext, &gcInfo);
+            std::cout << p.x << "," << p.y << std::endl;
+            ReleaseJavaObject(vmID, gbcontext);
+            ReleaseJavaObject(vmID, topAc);
+            auto c = gcsuccess;
+
+            AccessibleTableInfo tableInfo;
+            BOOL success = getAccessibleTableInfo(vmID, context, &tableInfo);
+            if(success)
+            {
+                AccessibleTableCellInfo cellInfo;
+                success = getAccessibleTableCellInfo(
+                    vmID, 
+                    tableInfo.accessibleTable,  // 表格对象
+                    0,                  // 目标行（零基）
+                    1,                  // 目标列（零基）
+                    &cellInfo                   // 输出：单元格信息
+                );
+                if(success)
+                {
+                    AccessibleContextInfo cellCtxInfo;
+                    requestFocus(vmID, cellInfo.accessibleContext);  // 请求焦点，可能触发状态更新
+                    success = GetAccessibleContextInfo(vmID, cellInfo.accessibleContext, &cellCtxInfo);
+                    if(success)
+                    {
+                        BOOL supportsText = FALSE;
+                        if (cellCtxInfo.accessibleInterfaces) { 
+                            // 新版：检查位域
+                            supportsText = (cellCtxInfo.accessibleInterfaces & 0x08) != 0; 
+                        } else {
+                            // 旧版：检查独立标志
+                            supportsText = cellCtxInfo.accessibleText; 
+                        }
+                        AccessibleTextInfo textInfo;
+                        success = GetAccessibleTextInfo(vmID, cellInfo.accessibleContext, &textInfo, 1, 1);
+                        AccessibleTextRectInfo rectInfo;
+                        success = GetAccessibleTextRect(vmID, cellInfo.accessibleContext, &rectInfo, textInfo.caretIndex);
+                        int a = 3;
+                    }
+                }
+            }
+        }
+        if (wcscmp(info.role, L"table1") != 0 && wcscmp(info.role, L"tree1") != 0) 
+        {
+            for (int i = 0; i < info.childrenCount; i++)
+            {
+                addComponentNodes(vmID, GetAccessibleChildFromContext(vmID, context, i),
+                                  newNode, hwnd, treeNodeItem, treeWnd);
+            }
         }
     }
     else
