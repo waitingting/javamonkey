@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2005, 2019, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2005, 2010, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -24,41 +24,26 @@
  */
 
 /*
- * A class to manage AccessBridge debugging
+ * Common AccessBridge IPC message definitions
  */
 
-#ifndef __AccessBridgeDebug_H__
-#define __AccessBridgeDebug_H__
+#include "AccessBridgeMessages.h"
 
-#include <crtdbg.h>
-#include <windows.h>
 
-#ifdef DEBUG
-#define DEBUGGING_ON
-#define SEND_TO_OUTPUT_DEBUG_STRING
-//#define JAVA_DEBUGGING_ON
-#endif
+// unique broadcast msg. IDs gotten dymanically
 
-#ifdef DEBUGGING_ON
-#define DEBUG_CODE(x) x
-#else
-#define DEBUG_CODE(x) /* */
-#endif
+// wParam == sourceHwnc; lParam = *vmID
+UINT theFromJavaHelloMsgID;
+// wParam == sourceHwnc; lParam unused
+UINT theFromWindowsHelloMsgID;
 
-#ifdef __cplusplus
-extern "C" {
-#endif
 
-    void PrintDebugString(char *msg, ...);
-    void PrintJavaDebugString(char *msg, ...);
-    void wPrintJavaDebugString(wchar_t *msg, ...);
-    void wPrintDebugString(wchar_t *msg, ...);
-    void initializeFileLogger(char * fileName);
-    void finalizeFileLogger();
+BOOL initBroadcastMessageIDs() {
+        theFromJavaHelloMsgID = RegisterWindowMessage("AccessBridge-FromJava-Hello");
+        theFromWindowsHelloMsgID = RegisterWindowMessage("AccessBridge-FromWindows-Hello");
 
-#ifdef __cplusplus
+        if (theFromJavaHelloMsgID == 0 || theFromWindowsHelloMsgID) {
+                return FALSE;
+        }
+        return TRUE;
 }
-#endif
-
-
-#endif

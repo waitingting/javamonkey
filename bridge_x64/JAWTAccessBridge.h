@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2005, 2019, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2005, 2010, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -24,41 +24,26 @@
  */
 
 /*
- * A class to manage AccessBridge debugging
+ * @(#)JAWTAccessBridge.h       1.9 05/03/21
  */
 
-#ifndef __AccessBridgeDebug_H__
-#define __AccessBridgeDebug_H__
+/*
+ * A DLL which is loaded by Java applications to handle communication
+ * between Java VMs purposes of Accessbility.
+ */
 
-#include <crtdbg.h>
 #include <windows.h>
+#include <jni.h>
 
-#ifdef DEBUG
-#define DEBUGGING_ON
-#define SEND_TO_OUTPUT_DEBUG_STRING
-//#define JAVA_DEBUGGING_ON
-#endif
+#include "AccessBridgePackages.h"
 
-#ifdef DEBUGGING_ON
-#define DEBUG_CODE(x) x
-#else
-#define DEBUG_CODE(x) /* */
-#endif
+#ifndef __JAWTAccessBridge_H__
+#define __JAWTAccessBridge_H__
 
-#ifdef __cplusplus
+
 extern "C" {
-#endif
-
-    void PrintDebugString(char *msg, ...);
-    void PrintJavaDebugString(char *msg, ...);
-    void wPrintJavaDebugString(wchar_t *msg, ...);
-    void wPrintDebugString(wchar_t *msg, ...);
-    void initializeFileLogger(char * fileName);
-    void finalizeFileLogger();
-
-#ifdef __cplusplus
+        BOOL WINAPI DllMain(HINSTANCE hinstDll, DWORD fdwReason,
+                                                LPVOID lpvReserved);
 }
-#endif
-
 
 #endif

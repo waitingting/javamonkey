@@ -76,6 +76,14 @@ int APIENTRY WinMain(HINSTANCE hInstance,
                      LPSTR lpCmdLine,
                      int nCmdShow)
 {
+    // 1. 分配控制台（仅首次调用有效）
+    if (!AllocConsole()) {
+        return 1;
+    }
+    // 2. 重定向标准流到控制台（CONOUT$ 是控制台输出设备的 DOS 名称）
+    freopen("CONOUT$", "w", stdout);  // 重定向 cout
+    freopen("CONOUT$", "w", stderr);  // 重定向 cerr
+    freopen("CONIN$", "r", stdin);    // 可选：重定向 cin 到控制台输入
 
     if (logfile == null)
     {
@@ -1338,7 +1346,6 @@ BOOL AccessibleNode::displayAPIWindow()
 
     if (!apiWindow)
     {
-        printError("cannot create API window");
         return (FALSE);
     }
 

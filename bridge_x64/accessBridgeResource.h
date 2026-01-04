@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2005, 2019, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2005, 2010, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -23,42 +23,25 @@
  * questions.
  */
 
-/*
- * A class to manage AccessBridge debugging
- */
+#define cVMID                           1001
+#define cWindowsID                      1002
+#define cStatusText                     1003
+#define cCallInfo                       1004
+#define cInvokedByText                  1005
+#define IDC_STATIC                      -1
 
-#ifndef __AccessBridgeDebug_H__
-#define __AccessBridgeDebug_H__
+#define cInstallAccessBridge            2001
+#define cRemindThereIsNewJVM            2005
+#define cDoNotRemindThereIsNewJVM       2005
 
-#include <crtdbg.h>
-#include <windows.h>
-
-#ifdef DEBUG
-#define DEBUGGING_ON
-#define SEND_TO_OUTPUT_DEBUG_STRING
-//#define JAVA_DEBUGGING_ON
+// Next default values for new objects
+//
+#ifdef APSTUDIO_INVOKED
+#ifndef APSTUDIO_READONLY_SYMBOLS
+#define _APS_NO_MFC                     1
+#define _APS_NEXT_RESOURCE_VALUE        102
+#define _APS_NEXT_COMMAND_VALUE         40001
+#define _APS_NEXT_CONTROL_VALUE         1032
+#define _APS_NEXT_SYMED_VALUE           101
 #endif
-
-#ifdef DEBUGGING_ON
-#define DEBUG_CODE(x) x
-#else
-#define DEBUG_CODE(x) /* */
-#endif
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-    void PrintDebugString(char *msg, ...);
-    void PrintJavaDebugString(char *msg, ...);
-    void wPrintJavaDebugString(wchar_t *msg, ...);
-    void wPrintDebugString(wchar_t *msg, ...);
-    void initializeFileLogger(char * fileName);
-    void finalizeFileLogger();
-
-#ifdef __cplusplus
-}
-#endif
-
-
 #endif

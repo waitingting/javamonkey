@@ -5,7 +5,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 set(BUILD_SHARED_LIBS OFF)
 set(RESOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/resources)
 set(RES_FILE ${CMAKE_CURRENT_SOURCE_DIR}/monkeyWindow.RC)
-set(JAVA_HOME "C:/jdk11")
+set(JAVA_HOME "C:/workspace/1.tools/javatools/jdk/jdk-8u461-windows-x64/jdk1.8.0_461")
 set(JAB_HOME ${RESOURCE_DIR}/accessbridge2_0_2)
 add_executable(${PROJECT_NAME} WIN32
 JavaMonkey.cpp
@@ -43,6 +43,12 @@ target_sources(${PROJECT_NAME}
     highlighter.cc
     string_win.cc
     misc_win.cc
+    # WinAccessBridge.cpp
+    # AccessBridgeEventHandler.cpp
+    # AccessBridgeJavaVMInstance.cpp
+    # AccessBridgeMessageQueue.cpp
+    # AccessBridgeMessages.cpp
+    # AccessBridgeJavaEntryPoints.cpp
 )
 
 target_include_directories(${PROJECT_NAME}
@@ -96,3 +102,15 @@ function(CopyJavaAccessBridge)
   )
   install(FILES ${JAB_HOME}/WindowsAccessBridge-${architecture}.dll DESTINATION bin)
 endfunction()
+
+# 检测系统位数
+if(CMAKE_SIZEOF_VOID_P EQUAL 8)
+    message(STATUS "Compiling for 64-bit system")
+    # add_subdirectory(bridge_x64)
+elseif(CMAKE_SIZEOF_VOID_P EQUAL 4)
+    message(STATUS "Compiling for 32-bit system")
+    add_subdirectory(bridge_x86)
+else()
+    message(WARNING "Unknown architecture")
+endif()
+

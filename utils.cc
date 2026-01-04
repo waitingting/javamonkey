@@ -22,7 +22,7 @@ namespace rpa::java
     return true;
   }
 
-  BOOL EnumChildWindowsProc(HWND hwnd, LPARAM arg)
+  BOOL CALLBACK EnumChildWindowsProc(HWND hwnd, LPARAM arg)
   {
     std::vector<HWND>* hwnds = reinterpret_cast<std::vector<HWND>*>(arg);
     if (IsSunAwtClass(hwnd))

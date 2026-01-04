@@ -1,15 +1,35 @@
 /*
  * Copyright (c) 2005, 2010, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
+ *
+ * This code is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License version 2 only, as
+ * published by the Free Software Foundation.  Oracle designates this
+ * particular file as subject to the "Classpath" exception as provided
+ * by Oracle in the LICENSE file that accompanied this code.
+ *
+ * This code is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+ * version 2 for more details (a copy is included in the LICENSE file that
+ * accompanied this code).
+ *
+ * You should have received a copy of the GNU General Public License version
+ * 2 along with this work; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
+ *
+ * Please contact Oracle, 500 Oracle Parkway, Redwood Shores, CA 94065 USA
+ * or visit www.oracle.com if you need additional information or have any
+ * questions.
  */
 
 /*
- * @(#)AccessBridgeCalls.c	1.25 05/08/22
+ * @(#)AccessBridgeCalls.c      1.25 05/08/22
  */
 
-/* 
+/*
  * Wrapper functions around calls to the AccessBridge DLL
- */ 
+ */
 
 
 #include <windows.h>
@@ -36,7 +56,7 @@ extern "C" {
     if ((theAccessBridge.result = \
         (type) GetProcAddress(theAccessBridgeInstance, name)) == (type) 0) { \
         PrintDebugString("LOAD_FP failed: %s", name); \
-	return FALSE; \
+        return FALSE; \
     }
 
     BOOL initializeAccessBridge() {
@@ -45,18 +65,18 @@ extern "C" {
         theAccessBridgeInstance = LoadLibrary("WINDOWSACCESSBRIDGE-32");
 #else
 #ifdef ACCESSBRIDGE_ARCH_64 // For 64bit AT new bridge
-		theAccessBridgeInstance = LoadLibrary("WINDOWSACCESSBRIDGE-64");
+                theAccessBridgeInstance = LoadLibrary("WINDOWSACCESSBRIDGE-64");
 #else // legacy
         theAccessBridgeInstance = LoadLibrary("WINDOWSACCESSBRIDGE");
 #endif
 #endif
         if (theAccessBridgeInstance != 0) {
-            LOAD_FP(Windows_run, Windows_runFP, "Windows_run");	
+            LOAD_FP(Windows_run, Windows_runFP, "Windows_run");
 
             LOAD_FP(SetJavaShutdown, SetJavaShutdownFP, "setJavaShutdownFP");
             LOAD_FP(SetFocusGained, SetFocusGainedFP, "setFocusGainedFP");
             LOAD_FP(SetFocusLost, SetFocusLostFP, "setFocusLostFP");
-		
+
             LOAD_FP(SetCaretUpdate, SetCaretUpdateFP, "setCaretUpdateFP");
 
             LOAD_FP(SetMouseClicked, SetMouseClickedFP, "setMouseClickedFP");
@@ -109,25 +129,25 @@ extern "C" {
             LOAD_FP(getAccessibleTableRowDescription, getAccessibleTableRowDescriptionFP, "getAccessibleTableRowDescription");
             LOAD_FP(getAccessibleTableColumnDescription, getAccessibleTableColumnDescriptionFP, "getAccessibleTableColumnDescription");
 
-            LOAD_FP(getAccessibleTableRowSelectionCount, getAccessibleTableRowSelectionCountFP, 
+            LOAD_FP(getAccessibleTableRowSelectionCount, getAccessibleTableRowSelectionCountFP,
                     "getAccessibleTableRowSelectionCount");
-            LOAD_FP(isAccessibleTableRowSelected, isAccessibleTableRowSelectedFP, 
+            LOAD_FP(isAccessibleTableRowSelected, isAccessibleTableRowSelectedFP,
                     "isAccessibleTableRowSelected");
-            LOAD_FP(getAccessibleTableRowSelections, getAccessibleTableRowSelectionsFP, 
+            LOAD_FP(getAccessibleTableRowSelections, getAccessibleTableRowSelectionsFP,
                     "getAccessibleTableRowSelections");
 
-            LOAD_FP(getAccessibleTableColumnSelectionCount, getAccessibleTableColumnSelectionCountFP, 
+            LOAD_FP(getAccessibleTableColumnSelectionCount, getAccessibleTableColumnSelectionCountFP,
                     "getAccessibleTableColumnSelectionCount");
-            LOAD_FP(isAccessibleTableColumnSelected, isAccessibleTableColumnSelectedFP, 
+            LOAD_FP(isAccessibleTableColumnSelected, isAccessibleTableColumnSelectedFP,
                     "isAccessibleTableColumnSelected");
-            LOAD_FP(getAccessibleTableColumnSelections, getAccessibleTableColumnSelectionsFP, 
+            LOAD_FP(getAccessibleTableColumnSelections, getAccessibleTableColumnSelectionsFP,
                     "getAccessibleTableColumnSelections");
 
-            LOAD_FP(getAccessibleTableRow, getAccessibleTableRowFP, 
+            LOAD_FP(getAccessibleTableRow, getAccessibleTableRowFP,
                     "getAccessibleTableRow");
-            LOAD_FP(getAccessibleTableColumn, getAccessibleTableColumnFP, 
+            LOAD_FP(getAccessibleTableColumn, getAccessibleTableColumnFP,
                     "getAccessibleTableColumn");
-            LOAD_FP(getAccessibleTableIndex, getAccessibleTableIndexFP, 
+            LOAD_FP(getAccessibleTableIndex, getAccessibleTableIndexFP,
                     "getAccessibleTableIndex");
 
             /* end AccessibleTable */
@@ -161,7 +181,7 @@ extern "C" {
             LOAD_FP(GetCurrentAccessibleValueFromContext, GetCurrentAccessibleValueFromContextFP, "getCurrentAccessibleValueFromContext");
             LOAD_FP(GetMaximumAccessibleValueFromContext, GetMaximumAccessibleValueFromContextFP, "getMaximumAccessibleValueFromContext");
             LOAD_FP(GetMinimumAccessibleValueFromContext, GetMinimumAccessibleValueFromContextFP, "getMinimumAccessibleValueFromContext");
-    
+
             LOAD_FP(AddAccessibleSelectionFromContext, AddAccessibleSelectionFromContextFP, "addAccessibleSelectionFromContext");
             LOAD_FP(ClearAccessibleSelectionFromContext, ClearAccessibleSelectionFromContextFP, "clearAccessibleSelectionFromContext");
             LOAD_FP(GetAccessibleSelectionFromContext, GetAccessibleSelectionFromContextFP, "getAccessibleSelectionFromContext");
@@ -176,7 +196,7 @@ extern "C" {
             LOAD_FP(getParentWithRoleElseRoot, getParentWithRoleElseRootFP, "getParentWithRoleElseRoot");
             LOAD_FP(getObjectDepth, getObjectDepthFP, "getObjectDepth");
             LOAD_FP(getActiveDescendent, getActiveDescendentFP, "getActiveDescendent");
-      
+
             // additional methods for Teton
             LOAD_FP(getVirtualAccessibleName, getVirtualAccessibleNameFP, "getVirtualAccessibleName");
             LOAD_FP(requestFocus, requestFocusFP, "requestFocus");
@@ -189,10 +209,8 @@ extern "C" {
 
             LOAD_FP(getEventsWaiting, getEventsWaitingFP, "getEventsWaiting");
 
-            // LOAD_FP(sendMemoryPackage, sendMemoryPackageFP, "sendMemoryPackage");
-
             theAccessBridge.Windows_run();
-        
+
             theAccessBridgeInitializedFlag = TRUE;
             PrintDebugString("theAccessBridgeInitializedFlag = TRUE");
             return TRUE;
@@ -399,10 +417,10 @@ extern "C" {
      */
     BOOL IsJavaWindow(HWND window) {
         if (theAccessBridgeInitializedFlag == TRUE) {
-			BOOL ret ;
-			ret = theAccessBridge.IsJavaWindow(window);
+                        BOOL ret ;
+                        ret = theAccessBridge.IsJavaWindow(window);
             return ret ;
-				
+
         }
         return FALSE;
     }
@@ -453,10 +471,10 @@ extern "C" {
     }
 
     /**
-     * Returns the Accessible Context with the specified role that is the 
+     * Returns the Accessible Context with the specified role that is the
      * ancestor of a given object. The role is one of the role strings
      * defined in AccessBridgePackages.h
-     * If there is no ancestor object that has the specified role, 
+     * If there is no ancestor object that has the specified role,
      * returns (AccessibleContext)0.
      */
     AccessibleContext getParentWithRole (const long vmID, const AccessibleContext accessibleContext,
@@ -469,10 +487,10 @@ extern "C" {
     }
 
     /**
-     * Returns the Accessible Context with the specified role that is the 
+     * Returns the Accessible Context with the specified role that is the
      * ancestor of a given object. The role is one of the role strings
      * defined in AccessBridgePackages.h.  If an object with the specified
-     * role does not exist, returns the top level object for the Java Window.  
+     * role does not exist, returns the top level object for the Java Window.
      * Returns (AccessibleContext)0 on error.
      */
     AccessibleContext getParentWithRoleElseRoot (const long vmID, const AccessibleContext accessibleContext,
@@ -485,9 +503,9 @@ extern "C" {
     }
 
     /**
-     * Returns the Accessible Context for the top level object in 
-     * a Java Window.  This is same Accessible Context that is obtained 
-     * from GetAccessibleContextFromHWND for that window.  Returns 
+     * Returns the Accessible Context for the top level object in
+     * a Java Window.  This is same Accessible Context that is obtained
+     * from GetAccessibleContextFromHWND for that window.  Returns
      * (AccessibleContext)0 on error.
      */
     AccessibleContext getTopLevelObject (const long vmID, const AccessibleContext accessibleContext) {
@@ -529,7 +547,7 @@ extern "C" {
     /**
      * Accessible Context routines
      */
-    BOOL GetAccessibleContextAt(long vmID, AccessibleContext acParent, 
+    BOOL GetAccessibleContextAt(long vmID, AccessibleContext acParent,
                                 jint x, jint y, AccessibleContext *ac) {
         if (theAccessBridgeInitializedFlag == TRUE) {
             return theAccessBridge.GetAccessibleContextAt(vmID, acParent, x, y, ac);
@@ -610,7 +628,7 @@ extern "C" {
     }
 
     /*
-     * return a description of an AccessibleTable row header 
+     * return a description of an AccessibleTable row header
      */
     AccessibleContext getAccessibleTableRowDescription(long vmID, AccessibleContext acParent, jint row) {
         if (theAccessBridgeInitializedFlag == TRUE) {
@@ -656,7 +674,7 @@ extern "C" {
         if (theAccessBridgeInitializedFlag == TRUE) {
             return theAccessBridge.getAccessibleTableRowSelections(vmID, table, count, selections);
         }
-        return FALSE;	
+        return FALSE;
     }
 
     /*
@@ -686,13 +704,13 @@ extern "C" {
         if (theAccessBridgeInitializedFlag == TRUE) {
             return theAccessBridge.getAccessibleTableColumnSelections(vmID, table, count, selections);
         }
-        return FALSE;	
+        return FALSE;
     }
 
     /*
      * return the row number for a cell at a given index
      */
-    jint 
+    jint
     getAccessibleTableRow(long vmID, AccessibleTable table, jint index) {
         if (theAccessBridgeInitializedFlag == TRUE) {
             return theAccessBridge.getAccessibleTableRow(vmID, table, index);
@@ -815,27 +833,27 @@ extern "C" {
      * Maps to AccessibleHypertext.getLinkCount.
      * Returns -1 on error.
      */
-    jint getAccessibleHyperlinkCount(const long vmID, 
+    jint getAccessibleHyperlinkCount(const long vmID,
                                      const AccessibleContext accessibleContext) {
-    
+
         if (theAccessBridgeInitializedFlag == TRUE) {
             return theAccessBridge.getAccessibleHyperlinkCount(vmID, accessibleContext);
         }
         return -1;
     }
-  
+
     /*
      * This method is used to iterate through the hyperlinks in a component.  It
      * returns hypertext information for a component starting at hyperlink index
      * nStartIndex.  No more than MAX_HYPERLINKS AccessibleHypertextInfo objects will
-     * be returned for each call to this method.  
+     * be returned for each call to this method.
      * returns FALSE on error.
      */
     BOOL getAccessibleHypertextExt(const long vmID,
                                    const AccessibleContext accessibleContext,
                                    const jint nStartIndex,
                                    /* OUT */ AccessibleHypertextInfo *hypertextInfo) {
-    
+
         if (theAccessBridgeInitializedFlag == TRUE) {
             return theAccessBridge.getAccessibleHypertextExt(vmID,
                                                              accessibleContext,
@@ -844,44 +862,44 @@ extern "C" {
         }
         return FALSE;
     }
-  
+
     /*
-     * Returns the index into an array of hyperlinks that is associated with 
+     * Returns the index into an array of hyperlinks that is associated with
      * a character index in document;
      * Maps to AccessibleHypertext.getLinkIndex.
      * Returns -1 on error.
      */
-    jint getAccessibleHypertextLinkIndex(const long vmID, 
+    jint getAccessibleHypertextLinkIndex(const long vmID,
                                          const AccessibleHypertext hypertext,
                                          const jint nIndex) {
-    
+
         if (theAccessBridgeInitializedFlag == TRUE) {
-            return theAccessBridge.getAccessibleHypertextLinkIndex(vmID, 
+            return theAccessBridge.getAccessibleHypertextLinkIndex(vmID,
                                                                    hypertext,
                                                                    nIndex);
         }
         return -1;
     }
-  
+
     /*
      * Returns the nth hyperlink in a document.
      * Maps to AccessibleHypertext.getLink.
      * Returns -1 on error
      */
-    BOOL getAccessibleHyperlink(const long vmID, 
+    BOOL getAccessibleHyperlink(const long vmID,
                                 const AccessibleHypertext hypertext,
-                                const jint nIndex, 
+                                const jint nIndex,
                                 /* OUT */ AccessibleHyperlinkInfo *hyperlinkInfo) {
-    
+
         if (theAccessBridgeInitializedFlag == TRUE) {
-            return theAccessBridge.getAccessibleHyperlink(vmID, 
+            return theAccessBridge.getAccessibleHyperlink(vmID,
                                                           hypertext,
-                                                          nIndex, 
+                                                          nIndex,
                                                           hyperlinkInfo);
         }
         return FALSE;
     }
-  
+
 
     /* Accessible KeyBindings, Icons and Actions */
     BOOL getAccessibleKeyBindings(long vmID, AccessibleContext accessibleContext,
@@ -988,25 +1006,25 @@ extern "C" {
             theAccessBridge.SelectAllAccessibleSelectionFromContext(vmID, as);
         }
     }
-  
+
     /**
      * Additional methods for Teton
      */
-  
+
     /**
      * Gets the AccessibleName for a component based upon the JAWS algorithm. Returns
      * whether successful.
      *
      * Bug ID 4916682 - Implement JAWS AccessibleName policy
      */
-    BOOL getVirtualAccessibleName(const long vmID, const AccessibleContext accessibleContext, 
+    BOOL getVirtualAccessibleName(const long vmID, const AccessibleContext accessibleContext,
                                   wchar_t *name, int len) {
         if (theAccessBridgeInitializedFlag == TRUE) {
             return theAccessBridge.getVirtualAccessibleName(vmID, accessibleContext, name, len);
         }
         return FALSE;
     }
-  
+
     /**
      * Request focus for a component. Returns whether successful;
      *
@@ -1018,37 +1036,37 @@ extern "C" {
         }
         return FALSE;
     }
-  
+
     /**
      * Selects text between two indices.  Selection includes the text at the start index
      * and the text at the end index. Returns whether successful;
      *
      * Bug ID 4944758 - selectTextRange method needed
      */
-    BOOL selectTextRange(const long vmID, const AccessibleContext accessibleContext, 
+    BOOL selectTextRange(const long vmID, const AccessibleContext accessibleContext,
                          const int startIndex, const int endIndex) {
         if (theAccessBridgeInitializedFlag == TRUE) {
             return theAccessBridge.selectTextRange(vmID, accessibleContext, startIndex, endIndex);
         }
         return FALSE;
     }
-  
+
     /**
-     * Get text attributes between two indices.  The attribute list includes the text at the 
+     * Get text attributes between two indices.  The attribute list includes the text at the
      * start index and the text at the end index. Returns whether successful;
      *
      * Bug ID 4944761 - getTextAttributes between two indices method needed
      */
-    BOOL getTextAttributesInRange(const long vmID, const AccessibleContext accessibleContext, 
+    BOOL getTextAttributesInRange(const long vmID, const AccessibleContext accessibleContext,
                                   const int startIndex, const int endIndex,
                                   AccessibleTextAttributesInfo *attributes, short *len) {
         if (theAccessBridgeInitializedFlag == TRUE) {
-            return theAccessBridge.getTextAttributesInRange(vmID, accessibleContext, startIndex, 
+            return theAccessBridge.getTextAttributesInRange(vmID, accessibleContext, startIndex,
                                                             endIndex, attributes, len);
         }
         return FALSE;
     }
-  
+
     /**
      * Returns the number of visible children of a component. Returns -1 on error.
      *
@@ -1060,13 +1078,13 @@ extern "C" {
         }
         return FALSE;
     }
-  
+
     /**
      * Gets the visible children of an AccessibleContext. Returns whether successful;
      *
      * Bug ID 4944762- getVisibleChildren for list-like components needed
      */
-    BOOL getVisibleChildren(const long vmID, const AccessibleContext accessibleContext, 
+    BOOL getVisibleChildren(const long vmID, const AccessibleContext accessibleContext,
                             const int startIndex, VisibleChildrenInfo *visibleChildrenInfo) {
         if (theAccessBridgeInitializedFlag == TRUE) {
             return theAccessBridge.getVisibleChildren(vmID, accessibleContext, startIndex,
@@ -1074,13 +1092,13 @@ extern "C" {
         }
         return FALSE;
     }
-  
+
     /**
      * Set the caret to a text position. Returns whether successful;
      *
      * Bug ID 4944770 - setCaretPosition method needed
      */
-    BOOL setCaretPosition(const long vmID, const AccessibleContext accessibleContext, 
+    BOOL setCaretPosition(const long vmID, const AccessibleContext accessibleContext,
                           const int position) {
         if (theAccessBridgeInitializedFlag == TRUE) {
             return theAccessBridge.setCaretPosition(vmID, accessibleContext, position);
