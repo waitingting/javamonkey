@@ -9,6 +9,8 @@ message(${VERSION_FILE})
 include_directories(include/bridge)
 include_directories(include/java.base/share/native/include)
 include_directories(include/java.base/windows/native/include)
+include_directories(include/java.desktop/share/native/include)
+include_directories(include/java.desktop/windows/native/include)
 include_directories(common)
 include_directories(toolscommon)
 
@@ -29,4 +31,6 @@ add_subdirectory(toolscommon)
 add_subdirectory(jabswitch)
 add_subdirectory(javamonkey)
 add_subdirectory(jaccesswalker)
+
+add_subdirectory(libjavaaccessbridge)
 
