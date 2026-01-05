@@ -1,0 +1,30 @@
+#include <winver.h>
+
+VS_VERSION_INFO VERSIONINFO
+    FILEVERSION     21,0,10,6
+    PRODUCTVERSION  21,0,10,6
+    FILEFLAGSMASK   0x3fL
+    FILEFLAGS       0x1L  // VS_FF_DEBUG
+    FILEOS          VOS_NT_WINDOWS32
+    FILETYPE        VFT_APP
+    FILESUBTYPE     VFT2_UNKNOWN
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904b0"  // 简体中文 + Unicode
+        BEGIN
+            VALUE "CompanyName", "Tech Corp"
+            VALUE "FileDescription", "Java(TM) Platform SE binary"
+            VALUE "FileVersion", "21.0.10.6"
+            VALUE "InternalName", "@PROJECT_NAME@"  // 原始文件名（动态替换）
+            VALUE "LegalCopyright", "Copyright (C) 2025 Data Grand. All rights reserved."  // 动态版权年份
+            VALUE "ProductName", "Java(TM) Platform SE 21"
+            VALUE "ProductVersion", "21.0.10.6"
+            VALUE "OriginalFilename", "@PROJECT_NAME@.exe"  // 原始文件名（带扩展名）
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x409, 1200
+    END
+END
