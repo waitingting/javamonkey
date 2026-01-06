@@ -33,4 +33,5 @@ add_subdirectory(javamonkey)
 add_subdirectory(jaccesswalker)
 
 add_subdirectory(libjavaaccessbridge)
+add_subdirectory(libwindowsaccessbridge)
 

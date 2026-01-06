@@ -1176,6 +1176,8 @@ void JavaMonkey::addComponentNodes(long vmID, AccessibleContext context,
         // 检查角色是否为"table"，如果是则不添加子节点
         if(wcscmp(info.role, L"table") == 0)
         {
+            AccessibleRectInfo rectInfo;
+            auto cc = GetAccessibleBoundsOnScreenFromContext(vmID, context, &rectInfo);
             // echoMouseObject();
             requestFocus(vmID, context);
             POINT p = { -492L, 248L};

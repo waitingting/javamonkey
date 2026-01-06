@@ -4236,6 +4236,49 @@ AccessBridgeJavaEntryPoints::getAccessibleTextRect(jobject accessibleContext, Ac
     return TRUE;
 }
 
+BOOL
+AccessBridgeJavaEntryPoints::getAccessibleBoundsOnScreenFromContext(jobject accessibleContext, AccessibleRectInfo *rectInfo) {
+
+    jthrowable exception;
+
+    PrintDebugString("[INFO]: Calling AccessBridgeJavaEntryPoints::getAccessibleBoundsOnScreenFromContext(%p)",
+                     accessibleContext);
+
+    // Verify the Java VM still exists and AccessibleContext is
+    // an instance of AccessibleText
+    if (verifyAccessibleText(accessibleContext) == FALSE) {
+        return FALSE;
+    }
+
+    if (getAccessibleBoundsOnScreenFromContextMethod != (jmethodID) 0) {
+        jobject javaRect = jniEnv->CallObjectMethod(accessBridgeObject,
+                                            getAccessibleBoundsOnScreenFromContextMethod,
+                                            accessibleContext);
+        jclass rectClass = jniEnv->FindClass("java/awt/Rectangle");
+        if (rectClass == nullptr) return FALSE;
+        // 获取字段ID
+        jfieldID xField = jniEnv->GetFieldID(rectClass, "x", "I");
+        jfieldID yField = jniEnv->GetFieldID(rectClass, "y", "I");
+        jfieldID widthField = jniEnv->GetFieldID(rectClass, "width", "I");
+        jfieldID heightField = jniEnv->GetFieldID(rectClass, "height", "I");
+
+        // 3. 读取属性值
+        rectInfo->x = jniEnv->GetIntField(javaRect, xField);
+        rectInfo->y = jniEnv->GetIntField(javaRect, yField);
+        rectInfo->width = jniEnv->GetIntField(javaRect, widthField);
+        rectInfo->height = jniEnv->GetIntField(javaRect, heightField); 
+        jniEnv->DeleteLocalRef(rectClass);
+        jniEnv->DeleteLocalRef(javaRect);
+        EXCEPTION_CHECK("Getting AccessibleXcoordTextRect - call to CallIntMethod()", FALSE);
+        PrintDebugString("[INFO]:  X coord = %d", rectInfo->x);
+    } else {
+        PrintDebugString("[ERROR]: either env == 0 or getAccessibleXcoordTextRectAtIndexFromContextMethod == 0");
+        return FALSE;
+    }
+
+    return TRUE;
+}
+
 // =====
 
 /**

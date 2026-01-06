@@ -2898,6 +2898,42 @@ WinAccessBridge::getAccessibleTextRect(long vmID,
     return FALSE;
 }
 
+/**
+ * getAccessibleBoundsOnScreenFromContext - getAccessibleBoundsOnScreenFromContext
+ *
+ * Note: if the AccessibleContext parameter is bogus, this call will blow up
+ */
+BOOL
+WinAccessBridge::getAccessibleBoundsOnScreenFromContext(long vmID,
+                                       JOBJECT64 AccessibleContext,
+                                       AccessibleRectInfo *rectInfo) {
+    if ((AccessBridgeJavaVMInstance *) 0 == javaVMs) {
+        return FALSE;
+    }
+    char buffer[sizeof(PackageType) + sizeof(GetAccessibleBoundsOnScreenFromContextPackage)];
+    PackageType *type = (PackageType *) buffer;
+    GetAccessibleBoundsOnScreenFromContextPackage *pkg = (GetAccessibleBoundsOnScreenFromContextPackage *) (buffer + sizeof(PackageType));
+    *type = cGetAccessibleBoundsOnScreenFromContextPackage;
+    pkg->vmID = vmID;
+    pkg->AccessibleContext = AccessibleContext;
+
+#ifdef ACCESSBRIDGE_ARCH_LEGACY // JOBJECT64 is jobject (32 bit pointer)
+    PrintDebugString("[INFO]: WinAccessBridge::getAccessibleBoundsOnScreenFromContext(%X, %p, %p)", vmID, AccessibleContext, rectInfo);
+#else // JOBJECT64 is jlong (64 bit)
+    PrintDebugString("[INFO]: WinAccessBridge::getAccessibleBoundsOnScreenFromContext(%X, %016I64X, %p)", vmID, AccessibleContext, rectInfo);
+#endif
+    // need to call only the HWND/VM that contains this AC
+    HWND destABWindow = javaVMs->findAccessBridgeWindow(vmID);
+    if (destABWindow != (HWND) 0) {
+        if (sendMemoryPackage(buffer, sizeof(buffer), destABWindow) == TRUE) {
+            memcpy(rectInfo, (&pkg->rRectInfo), sizeof(AccessibleRectInfo));
+            // [[[FIXME]]] should test to see if valid info returned; return FALSE if not
+            return TRUE;
+        }
+    }
+
+    return FALSE;
+}
 
 /**
  * getAccessibleTextRect - gets the text bounding rectangle

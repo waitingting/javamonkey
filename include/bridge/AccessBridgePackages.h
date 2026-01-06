@@ -669,6 +669,13 @@ typedef long ABHWND64;
         jint height;                // "
     } AccessibleTextRectInfo;
 
+    typedef struct AccessibleRectInfoTag {
+        jint x;                     // bounding rect of char at index
+        jint y;                     // "
+        jint width;                 // "
+        jint height;                // "
+    } AccessibleRectInfo;
+
     // standard attributes for text; note: tabstops are not supported
     typedef struct AccessibleTextAttributesInfoTag {
         BOOL bold;
@@ -1254,6 +1261,12 @@ typedef long ABHWND64;
         jint index;
         AccessibleTextRectInfo rTextRectInfo;
     } GetAccessibleTextRectInfoPackage;
+
+    typedef struct GetAccessibleBoundsOnScreenFromContextPackageTag {
+        long vmID;
+        JOBJECT64 AccessibleContext;
+        AccessibleRectInfo rRectInfo;
+    } GetAccessibleBoundsOnScreenFromContextPackage;
 
     typedef struct GetCaretLocationPackageTag {
         long vmID;
@@ -1917,9 +1930,10 @@ typedef long ABHWND64;
         cGetVisibleChildrenCountPackage,
         cGetVisibleChildrenPackage,
         cSetCaretPositionPackage,
-        cGetCaretLocationPackage
+        cGetCaretLocationPackage,
 
-
+        // Extend methods for jab
+        cGetAccessibleBoundsOnScreenFromContextPackage = 0x1800
     } PackageType;
 
 
@@ -1959,6 +1973,7 @@ typedef long ABHWND64;
         GetAccessibleTextSelectionInfoPackage getAccessibleTextSelectionInfo;
         GetAccessibleTextAttributeInfoPackage getAccessibleTextAttributeInfo;
         GetAccessibleTextRectInfoPackage getAccessibleTextRectInfo;
+        GetAccessibleBoundsOnScreenFromContextPackage getAccessibleBoundsOnScreenFromContext;
         GetAccessibleTextLineBoundsPackage getAccessibleTextLineBounds;
         GetAccessibleTextRangePackage getAccessibleTextRange;
 
@@ -2132,6 +2147,7 @@ typedef long ABHWND64;
         GetAccessibleTextSelectionInfoPackage getAccessibleTextSelectionInfo;
         GetAccessibleTextAttributeInfoPackage getAccessibleTextAttributeInfo;
         GetAccessibleTextRectInfoPackage getAccessibleTextRectInfo;
+        GetAccessibleBoundsOnScreenFromContextPackage getAccessibleBoundsOnScreenFromContext;
         GetAccessibleTextLineBoundsPackage getAccessibleTextLineBounds;
         GetAccessibleTextRangePackage getAccessibleTextRange;
 

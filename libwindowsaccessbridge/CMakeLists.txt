@@ -1,17 +1,24 @@
-project(libjavaaccessbridge)
+project(WINDOWSACCESSBRIDGE)
 
-set(JAVA_HOME "C:/workspace/1.tools/javatools/jdk/jdk-21.0.8_windows-x64_bin/jdk-21.0.8")
-set(JAVA_JVM_LIBRARY "${JAVA_HOME}/lib/jvm.lib")
-set(JAVA_AWT_LIBRARY "${JAVA_HOME}/lib/jawt.lib")
+# 检测系统位数
+if(CMAKE_SIZEOF_VOID_P EQUAL 8)
+  set(DLL_POSTFIX "-64")
+elseif(CMAKE_SIZEOF_VOID_P EQUAL 4)
+  set(DLL_POSTFIX "-32")
+else()
+  message(WARNING "Unknown architecture")
+endif()
 
-add_library(${PROJECT_NAME} SHARED JavaAccessBridge.cpp)
+add_library(${PROJECT_NAME} SHARED AccessBridgeWindowsEntryPoints.cpp)
 # add_library(rpad::${PROJECT_NAME} ALIAS ${PROJECT_NAME})
+
+target_link_options(${PROJECT_NAME} PRIVATE "/DEF:${CMAKE_CURRENT_SOURCE_DIR}/WinAccessBridge.DEF")
 
 # 设置输出路径（可选）
 set_target_properties(${PROJECT_NAME} PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin
     LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib
-    OUTPUT_NAME "javaaccessbridge"  # 关键设置
+    OUTPUT_NAME "${PROJECT_NAME}${DLL_POSTFIX}"  # 关键设置
 )
 
 if (MSVC)
@@ -22,20 +29,18 @@ else()
   set(CMAKE_EXE_LINKER_FLAGS "-static-libstdc++ -pthread -Wl,-rpath-link,${RPATH},--as-needed")
 endif()
 
-find_package(Java COMPONENTS Runtime REQUIRED)
-find_package(JNI REQUIRED)
-
 target_sources(${PROJECT_NAME}
   PRIVATE
-    JavaAccessBridge.cpp
-    AccessBridgeJavaEntryPoints.cpp
-    AccessBridgeATInstance.cpp
+    AccessBridgeEventHandler.cpp
+    AccessBridgeJavaVMInstance.cpp
+    AccessBridgeMessageQueue.cpp
+    AccessBridgeWindowsEntryPoints.cpp
+    WinAccessBridge.cpp
 )
 
 target_link_libraries(${PROJECT_NAME}
   PRIVATE
     rpad::common
-    ${JAVA_JVM_LIBRARY} ${JAVA_AWT_LIBRARY}
   )
 
 target_compile_definitions(${PROJECT_NAME} PRIVATE _CRT_SECURE_NO_WARNINGS)

@@ -326,6 +326,7 @@ public:
     BOOL getAccessibleTextSelectionInfo(jobject AccessibleContext, AccessibleTextSelectionInfo *selectionInfo);
     BOOL getAccessibleTextAttributes(jobject AccessibleContext, jint index, AccessibleTextAttributesInfo *attributes);
     BOOL getAccessibleTextRect(jobject AccessibleContext, AccessibleTextRectInfo *rectInfo, jint index);
+    BOOL getAccessibleBoundsOnScreenFromContext(jobject AccessibleContext, AccessibleRectInfo *rectInfo);
     BOOL getAccessibleCaretRect(jobject AccessibleContext, AccessibleTextRectInfo *rectInfo, jint index);
     BOOL getAccessibleTextLineBounds(jobject AccessibleContext, jint index, jint *startIndex, jint *endIndex);
     BOOL getAccessibleTextRange(jobject AccessibleContext, jint start, jint end, wchar_t *text, short len);

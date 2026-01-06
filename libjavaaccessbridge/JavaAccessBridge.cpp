@@ -675,7 +675,7 @@ JavaAccessBridge::processPackage(char *buffer, int bufsize) {
                              bufsize, sizeof(PackageType) + sizeof(GetAccessibleChildFromContextPackage));
         }
         break;
-
+    
     case cGetAccessibleParentFromContextPackage:
         PrintDebugString("[INFO]:    type == cGetAccessibleParentFromContextPackage");
         if (bufsize == (sizeof(PackageType) + sizeof(GetAccessibleParentFromContextPackage))) {
@@ -1254,6 +1254,19 @@ JavaAccessBridge::processPackage(char *buffer, int bufsize) {
         } else {
             PrintDebugString("[ERROR]:    processing FAILED!! -> bufsize = %d; expectation = %d",
                              bufsize, sizeof(PackageType) + sizeof(GetAccessibleTextRectInfoPackage));
+        }
+        break;
+
+    case cGetAccessibleBoundsOnScreenFromContextPackage:
+        PrintDebugString("[INFO]:   type == cGetAccessibleBoundsOnScreenFromContextPackage");
+        if (bufsize == (sizeof(PackageType) + sizeof(GetAccessibleBoundsOnScreenFromContextPackage))) {
+            GetAccessibleBoundsOnScreenFromContextPackage *pkg =
+                (GetAccessibleBoundsOnScreenFromContextPackage *) (buffer + sizeof(PackageType));
+            windowsThreadEntryPoints->getAccessibleBoundsOnScreenFromContext((jobject)pkg->AccessibleContext, 
+                                                                             &(pkg->rRectInfo));
+        } else {
+            PrintDebugString("[ERROR]:    processing FAILED!! -> bufsize = %d; expectation = %d",
+                             bufsize, sizeof(PackageType) + sizeof(GetAccessibleBoundsOnScreenFromContextPackage));
         }
         break;
 

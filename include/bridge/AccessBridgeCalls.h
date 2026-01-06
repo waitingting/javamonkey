@@ -200,6 +200,7 @@ extern "C" {
     typedef BOOL (*GetAccessibleTextSelectionInfoFP) (long vmID, AccessibleText at, AccessibleTextSelectionInfo *textSelection);
     typedef BOOL (*GetAccessibleTextAttributesFP) (long vmID, AccessibleText at, jint index, AccessibleTextAttributesInfo *attributes);
     typedef BOOL (*GetAccessibleTextRectFP) (long vmID, AccessibleText at, AccessibleTextRectInfo *rectInfo, jint index);
+    typedef BOOL (*GetAccessibleBoundsOnScreenFromContextFP) (long vmID, AccessibleContext ac, AccessibleRectInfo *rectInfo);
     typedef BOOL (*GetAccessibleTextLineBoundsFP) (long vmID, AccessibleText at, jint index, jint *startIndex, jint *endIndex);
     typedef BOOL (*GetAccessibleTextRangeFP) (long vmID, AccessibleText at, jint start, jint end, wchar_t *text, short len);
 
@@ -339,6 +340,7 @@ extern "C" {
         GetAccessibleTextSelectionInfoFP GetAccessibleTextSelectionInfo;
         GetAccessibleTextAttributesFP GetAccessibleTextAttributes;
         GetAccessibleTextRectFP GetAccessibleTextRect;
+        GetAccessibleBoundsOnScreenFromContextFP GetAccessibleBoundsOnScreenFromContext;
         GetAccessibleTextLineBoundsFP GetAccessibleTextLineBounds;
         GetAccessibleTextRangeFP GetAccessibleTextRange;
 
@@ -444,6 +446,7 @@ extern "C" {
     BOOL GetAccessibleContextWithFocus(HWND window, long *vmID, AccessibleContext *ac);
     BOOL GetAccessibleContextInfo(long vmID, AccessibleContext ac, AccessibleContextInfo *info);
     AccessibleContext GetAccessibleChildFromContext(long vmID, AccessibleContext ac, jint index);
+    BOOL GetAccessibleBoundsOnScreenFromContext(long vmID, AccessibleContext ac, AccessibleRectInfo *rectInfo);
     AccessibleContext GetAccessibleParentFromContext(long vmID, AccessibleContext ac);
 
     /**

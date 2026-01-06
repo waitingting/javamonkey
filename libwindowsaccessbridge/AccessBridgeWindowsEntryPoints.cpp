@@ -682,6 +682,17 @@ extern "C" {
         return FALSE;
     }
 
+    BOOL getAccessibleBoundsOnScreenFromContext(long vmID, JOBJECT64 AccessibleContext,
+                               AccessibleRectInfo *rectInfo) {
+        if (theWindowsAccessBridge != 0) {
+            return theWindowsAccessBridge->getAccessibleBoundsOnScreenFromContext(
+                                                                 vmID,
+                                                                 AccessibleContext,
+                                                                 rectInfo);
+        }
+        return FALSE;
+    }
+
     BOOL getCaretLocation(long vmID, JOBJECT64 AccessibleContext,
                           AccessibleTextRectInfo *rectInfo, jint index) {
         if (theWindowsAccessBridge != 0) {

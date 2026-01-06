@@ -108,6 +108,7 @@ EXPORTS
     getAccessibleTextSelectionInfo
     getAccessibleTextAttributes
     getAccessibleTextRect
+    getAccessibleBoundsOnScreenFromContext
     getAccessibleTextLineBounds
     getAccessibleTextRange
 

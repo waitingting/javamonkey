@@ -1,7 +1,7 @@
 project(javamonkey)
 set(RESOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/resources)
 set(RES_FILE ${CMAKE_CURRENT_SOURCE_DIR}/monkeyWindow.RC)
-set(JAVA_HOME "C:/workspace/1.tools/javatools/jdk/jdk-8u461-windows-x64/jdk1.8.0_461")
+# set(JAVA_HOME "C:/workspace/1.tools/javatools/jdk/jdk-8u461-windows-x64/jdk1.8.0_461")
 set(JAB_HOME ${RESOURCE_DIR}/accessbridge2_0_2)
 add_executable(${PROJECT_NAME} WIN32
 JavaMonkey.cpp
@@ -10,6 +10,12 @@ ${RES_FILE}
 
 # add_library(${PROJECT_NAME})
 # add_library(rpad::${PROJECT_NAME} ALIAS ${PROJECT_NAME})
+
+# 设置输出路径（可选）
+set_target_properties(${PROJECT_NAME} PROPERTIES
+    RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin
+)
+
 
 if (MSVC)
   set(CMAKE_MSVC_RUNTIME_LIBRARY MultiThreaded$<$<CONFIG:Debug>:Debug>)
@@ -26,7 +32,7 @@ if (NOT DEFINED JAB_HOME)
 endif()
 
 find_package(Java COMPONENTS Runtime REQUIRED)
-find_package(JNI REQUIRED)
+find_package(JNI)
 
 
 target_sources(${PROJECT_NAME}

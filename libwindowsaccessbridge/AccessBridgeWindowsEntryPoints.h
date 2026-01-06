@@ -231,6 +231,7 @@ extern "C" {
     BOOL getAccessibleTextSelectionInfo(long vmID, JOBJECT64 AccessibleContext, AccessibleTextSelectionInfo *selectionInfo);
     BOOL getAccessibleTextAttributes(long vmID, JOBJECT64 AccessibleContext, jint index, AccessibleTextAttributesInfo *attributes);
     BOOL getAccessibleTextRect(long vmID, JOBJECT64 AccessibleContext, AccessibleTextRectInfo *rectInfo, jint index);
+    BOOL getAccessibleBoundsOnScreenFromContext(long vmID, JOBJECT64 AccessibleContext, AccessibleRectInfo *rectInfo);
     BOOL getAccessibleTextLineBounds(long vmID, JOBJECT64 AccessibleContext, jint index, jint *startIndex, jint *endIndex);
     BOOL getAccessibleTextRange(long vmID, JOBJECT64 AccessibleContext, jint start, jint end, wchar_t *text, short len);
 

@@ -209,6 +209,8 @@ extern "C" {
 
             LOAD_FP(getEventsWaiting, getEventsWaitingFP, "getEventsWaiting");
 
+            // LOAD_FP(GetAccessibleBoundsOnScreenFromContext, GetAccessibleBoundsOnScreenFromContextFP, "getAccessibleBoundsOnScreenFromContext");
+
             theAccessBridge.Windows_run();
 
             theAccessBridgeInitializedFlag = TRUE;
@@ -776,6 +778,13 @@ extern "C" {
     BOOL GetAccessibleTextRect(long vmID, AccessibleText at, AccessibleTextRectInfo *rectInfo, jint index) {
         if (theAccessBridgeInitializedFlag == TRUE) {
             return theAccessBridge.GetAccessibleTextRect(vmID, at, rectInfo, index);
+        }
+        return FALSE;
+    }
+
+    BOOL GetAccessibleBoundsOnScreenFromContext(long vmID, AccessibleContext ac, AccessibleRectInfo *rectInfo) {
+        if (theAccessBridgeInitializedFlag == TRUE) {
+            return theAccessBridge.GetAccessibleBoundsOnScreenFromContext(vmID, ac, rectInfo);
         }
         return FALSE;
     }
