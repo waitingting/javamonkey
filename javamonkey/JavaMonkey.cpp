@@ -1177,7 +1177,7 @@ void JavaMonkey::addComponentNodes(long vmID, AccessibleContext context,
         if(wcscmp(info.role, L"table") == 0)
         {
             AccessibleRectInfo rectInfo;
-            auto cc = GetAccessibleBoundsOnScreenFromContext(vmID, context, &rectInfo);
+            // auto cc = GetAccessibleBoundsOnScreenFromContext(vmID, context, &rectInfo);
             // echoMouseObject();
             requestFocus(vmID, context);
             POINT p = { -492L, 248L};
